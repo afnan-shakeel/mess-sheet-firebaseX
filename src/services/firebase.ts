@@ -16,9 +16,17 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const usersSnap: QuerySnapshot = await getDocs(collection(db, 'users'))
-const messSnap: QuerySnapshot = await getDocs(collection(db, 'mess'))
-
+const fetchCollections = async () => {
+    const usersSnap: QuerySnapshot = await getDocs(collection(db, 'users'))
+    const messSnap: QuerySnapshot = await getDocs(collection(db, 'mess'))
+    return [usersSnap, messSnap]
+}
+var usersSnap: any;
+var messSnap: any;
+fetchCollections().then((arr) => {
+    usersSnap = arr[0]
+    messSnap = arr[1]
+})
 const getAllMess = async () => {
     const val: QueryDocumentSnapshot[] = messSnap.docs
     return val.map(doc => ({ id: doc.id, ...doc.data() }))
